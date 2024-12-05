@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Velicham Event Photo">
+    <meta property="og:description" content="Check out my Velicham event photo!">
+    <meta property="og:image" id="ogImage" content="default-image.jpg">
+    <title>@Powered by IT Cell,ISM Kakkanad</title>
+	
+<!-- This works fine, can upload a photo and share with others, ... No crop, No camera -->
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 595px; /* Max width for A4 */
+            aspect-ratio: 595 / 842; /* Maintain A4 aspect ratio */
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .event-frame {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: url('velicham8background.jpg') no-repeat center;
+            background-size: cover;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .event-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .photo-circle {
+            width: 80%; /* Scales with container */
+            max-width: 280px; /* Max size */
+            aspect-ratio: 1 / 1; /* Keep it square */
+            border-radius: 50%;
+            border: 4px solid white;
+            overflow: hidden;
+            position: relative;
+            background: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-top: 10%;
+        }
+
+        .photo-circle:hover {
+            transform: scale(1.05);
+        }
+
+        .photo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-prompt {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #666;
+            width: 100%;
+        }
+
+        .upload-prompt i {
+            font-size: 5vw; /* Scales with viewport */
+            margin-bottom: 10px;
+        }
+
+        .share-icon {
+            margin-top: 20px;
+            font-size: 7vw; /* Scales with viewport */
+            color: #007bff;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .share-icon:hover {
+            color: #0056b3;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        @media print {
+            .share-icon {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="capture">
+        <div class="event-frame">
+            <div class="event-content">
+                <div class="photo-circle" onclick="document.getElementById('fileInput').click()">
+                    <img id="previewImage" src="" style="display: none;">
+                    <div class="upload-prompt">
+                        <i class="fas fa-camera"></i>
+                        <p>Click to upload photo</p>
+                    </div>
+                </div>
+                
+                <input type="file" id="fileInput" accept="image/*">
+            </div>
+        </div>
+    </div>
+
+    <i class="fas fa-share-alt share-icon" onclick="shareImage()"></i>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const previewImage = document.getElementById('previewImage');
+        const uploadPrompt = document.querySelector('.upload-prompt');
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                    uploadPrompt.style.display = 'none';
+                    
+                    // Update og:image meta tag
+                    document.getElementById('ogImage').content = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        async function shareImage() {
+            const captureElement = document.getElementById('capture');
+            try {
+                const canvas = await html2canvas(captureElement);
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                const file = new File([blob], 'velicham_event_photo.png', { type: 'image/png' });
+
+                if (navigator.share) {
+                    await navigator.share({
+                        files: [file],
+                        title: 'Velicham Event Photo',
+                        text: 'Check out my Velicham event photo!',
+                    });
+                } else {
+                    alert('Sharing is not supported on this device.');
+                }
+            } catch (error) {
+                console.error('Error sharing the image:', error);
+                alert('An error occurred while trying to share the image.');
+            }
+        }
+    </script>
+</body>
+</html>
