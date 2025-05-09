@@ -7,10 +7,8 @@
     <meta property="og:description" content="Check out my Velicham event photo!">
     <meta property="og:image" id="ogImage" content="default-image.jpg">
     <title>@Powered by IT Cell,ISM Kakkanad</title>
-
-    <!-- Add Cropper.js CSS and JS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+	
+<!-- This works fine, can capture photo by camera and share with others, ... No crop -->
 
     <style>
         * {
@@ -31,8 +29,8 @@
 
         .container {
             width: 100%;
-            max-width: 595px;
-            aspect-ratio: 595 / 842;
+            max-width: 595px; /* Max width for A4 */
+            aspect-ratio: 595 / 842; /* Maintain A4 aspect ratio */
             margin: 20px auto;
             position: relative;
         }
@@ -62,9 +60,9 @@
         }
 
         .photo-circle {
-            width: 70%;
-            max-width: 250px;
-            aspect-ratio: 1 / 1;
+            width: 70%; /* Scales with container */
+            max-width: 250px; /* Max size */
+            aspect-ratio: 1 / 1; /* Keep it square */
             border-radius: 50%;
             border: 4px solid white;
             overflow: hidden;
@@ -96,13 +94,13 @@
         }
 
         .upload-prompt i {
-            font-size: 5vw;
+            font-size: 5vw; /* Scales with viewport */
             margin-bottom: 10px;
         }
 
         .share-icon {
             margin-top: 20px;
-            font-size: 7vw;
+            font-size: 7vw; /* Scales with viewport */
             color: #007bff;
             cursor: pointer;
             transition: color 0.2s ease;
@@ -112,82 +110,12 @@
             color: #0056b3;
         }
 
-        /* Gallery button and modal styles */
-        .gallery-btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .gallery-btn:hover {
-            background-color: #0056b3;
-        }
-
-        .modal {
+        #fileInput {
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-        }
-
-        .modal-content {
-            position: relative;
-            width: 90%;
-            max-width: 500px;
-            margin: 50px auto;
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-        }
-
-        .close-modal {
-            position: absolute;
-            right: 10px;
-            top: 10px;
-            font-size: 24px;
-            cursor: pointer;
-            color: #666;
-        }
-
-        #cropperImage {
-            max-width: 100%;
-            max-height: 400px;
-        }
-
-        .crop-buttons {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .crop-btn {
-            padding: 8px 16px;
-            margin: 0 5px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .crop-btn.cancel {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        .crop-btn.apply {
-            background-color: #28a745;
-            color: white;
         }
 
         @media print {
-            .share-icon, .gallery-btn {
+            .share-icon {
                 display: none;
             }
         }
@@ -211,24 +139,7 @@
         </div>
     </div>
 
-    <!-- Gallery button -->
-    <button class="gallery-btn" onclick="openGallery()">Select from Gallery</button>
     <i class="fas fa-share-alt share-icon" onclick="shareImage()"></i>
-
-    <!-- Modal for cropping -->
-    <div id="cropModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
-            <img id="cropperImage" src="">
-            <div class="crop-buttons">
-                <button class="crop-btn cancel" onclick="closeModal()">Cancel</button>
-                <button class="crop-btn apply" onclick="applyCrop()">Apply</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Gallery input -->
-    <input type="file" id="galleryInput" accept="image/*" style="display: none;">
 
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -238,12 +149,7 @@
         const cameraInput = document.getElementById('cameraInput');
         const previewImage = document.getElementById('previewImage');
         const uploadPrompt = document.querySelector('.upload-prompt');
-        let cropper;
-        const galleryInput = document.getElementById('galleryInput');
-        const cropModal = document.getElementById('cropModal');
-        const cropperImage = document.getElementById('cropperImage');
 
-        // Camera capture functionality
         cameraInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -260,70 +166,6 @@
             }
         });
 
-        // Gallery selection functionality
-        function openGallery() {
-            galleryInput.click();
-        }
-
-        galleryInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    cropperImage.src = e.target.result;
-                    cropModal.style.display = 'block';
-                    
-                    // Initialize cropper after image is loaded
-                    cropperImage.onload = function() {
-                        if (cropper) {
-                            cropper.destroy();
-                        }
-                        cropper = new Cropper(cropperImage, {
-                            aspectRatio: 1,
-                            viewMode: 1,
-                            dragMode: 'move',
-                            autoCropArea: 1,
-                            restore: false,
-                            guides: true,
-                            center: true,
-                            highlight: false,
-                            cropBoxMovable: true,
-                            cropBoxResizable: true,
-                            toggleDragModeOnDblclick: false,
-                        });
-                    };
-                }
-                reader.readAsDataURL(file);
-            }
-        });
-
-        function closeModal() {
-            cropModal.style.display = 'none';
-            if (cropper) {
-                cropper.destroy();
-                cropper = null;
-            }
-        }
-
-        function applyCrop() {
-            if (cropper) {
-                const canvas = cropper.getCroppedCanvas({
-                    width: 300,
-                    height: 300
-                });
-                
-                previewImage.src = canvas.toDataURL();
-                previewImage.style.display = 'block';
-                uploadPrompt.style.display = 'none';
-                
-                // Update og:image meta tag
-                document.getElementById('ogImage').content = canvas.toDataURL();
-                
-                closeModal();
-            }
-        }
-
-        // Share functionality
         async function shareImage() {
             const captureElement = document.getElementById('capture');
             try {
@@ -347,4 +189,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
