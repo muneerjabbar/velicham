@@ -100,33 +100,80 @@
             margin-bottom: 10px;
         }
 
-        .share-icon {
-            margin-top: 20px;
-            font-size: 7vw;
-            color: #007bff;
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
+		.share-icon {
+			font-size: 40px;
+			color: white;
+			background-color: #dc143c;
+			padding: 10px;
+			border-radius: 50%;
+			margin-top: 10px;
+			margin-left: 15px;
+			cursor: pointer;
+			transition: transform 0.2s ease, background-color 0.3s ease;
+			box-shadow: 0 4px 8px rgba(220, 20, 60, 0.3);
+		}
+		
+		.share-wrapper {
+			display: inline-flex;
+			align-items: center;
+			gap: 10px;
+			margin-top: 20px;
+			padding: 12px 20px;
+			background-color: #007bff;
+			color: white;
+			font-size: 18px;
+			font-weight: 600;
+			border-radius: 10px;
+			cursor: pointer;
+			transition: background-color 0.3s ease, transform 0.2s ease;
+			box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+		}
 
-        .share-icon:hover {
-            color: #0056b3;
-        }
+		.share-wrapper i {
+			font-size: 32px;
+			transition: transform 0.2s ease;
+		}
+
+		.share-wrapper:hover {
+			background-color: #a10e2a;
+			transform: scale(1.05);
+		}
+
+		.share-wrapper:hover i {
+			transform: rotate(20deg);
+		}
+
+		.share-wrapper:active {
+			transform: scale(0.98);
+		}		
+
 
         /* Gallery button and modal styles */
-        .gallery-btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
 
-        .gallery-btn:hover {
-            background-color: #0056b3;
-        }
+		.gallery-btn {
+			margin-top: 20px;
+			padding: 12px 24px;
+			background-color: #dc143c; /* Crimson */
+			color: white;
+			font-weight: bold;
+			font-size: 16px;
+			border: none;
+			border-radius: 12px;
+			cursor: pointer;
+			box-shadow: 0 4px 8px rgba(220, 20, 60, 0.3);
+			transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+		}
+
+		.gallery-btn:hover {
+			background-color: #c11235; /* Slightly darker red */
+			transform: scale(1.05);
+			box-shadow: 0 6px 12px rgba(220, 20, 60, 0.4);
+		}
+
+		.gallery-btn:active {
+			transform: scale(0.98);
+			box-shadow: 0 2px 6px rgba(220, 20, 60, 0.2);
+		}
 
         .modal {
             display: none;
@@ -201,7 +248,7 @@
                     <img id="previewImage" src="" style="display: none;">
                     <div class="upload-prompt">
                         <i class="fas fa-camera"></i>
-                        <p>Click to take a photo</p>
+                        <p>Tap here to take a Selfie</p>
                     </div>
                 </div>
                 
@@ -212,8 +259,9 @@
     </div>
 
     <!-- Gallery button -->
-    <button class="gallery-btn" onclick="openGallery()">Select from Gallery</button>
+    <button class="gallery-btn" onclick="openGallery()">Or Select a Super Photo from Gallery</button>
     <i class="fas fa-share-alt share-icon" onclick="shareImage()"></i>
+	<span>Share in Social Media</span>
 
     <!-- Modal for cropping -->
     <div id="cropModal" class="modal">
